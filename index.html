@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>语文笔记生成器 - 智能爬虫版</title>
+    <title>语文笔记生成器 - 爬虫AI版</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
@@ -32,12 +32,6 @@
         header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
         }
         
         .search-card {
@@ -60,12 +54,6 @@
             font-size: 1rem;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        
-        .input-group input:focus {
-            border-color: #667eea;
         }
         
         .input-group button {
@@ -77,11 +65,6 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s;
-        }
-        
-        .input-group button:hover {
-            transform: translateY(-2px);
         }
         
         .loading {
@@ -111,7 +94,6 @@
             background: white;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             display: none;
         }
         
@@ -122,12 +104,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .result-header h2 {
-            color: #333;
         }
         
         .copy-btn {
@@ -145,7 +121,6 @@
             max-height: 600px;
             overflow-y: auto;
             white-space: pre-wrap;
-            font-family: inherit;
         }
         
         .error-card {
@@ -156,62 +131,11 @@
             display: none;
         }
         
-        .success-card {
-            background: #d4edda;
-            color: #155724;
-            padding: 20px;
-            border-radius: 12px;
-            display: none;
-            margin-bottom: 20px;
-        }
-        
-        .examples {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-        
-        .examples p {
-            color: #666;
-            margin-bottom: 10px;
-        }
-        
-        .example-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .example-btn {
-            padding: 5px 12px;
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-        
-        .example-btn:hover {
-            background: #667eea;
-            color: white;
-        }
-        
-        .status-badge {
+        .token-status {
             margin-top: 15px;
             padding: 10px;
-            background: #f0f0f0;
             border-radius: 8px;
             font-size: 0.85rem;
-            color: #666;
-            text-align: center;
-        }
-        
-        .token-status {
-            margin-top: 10px;
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 0.8rem;
             text-align: center;
         }
         
@@ -225,60 +149,41 @@
             color: #856404;
         }
         
-        @media (max-width: 600px) {
-            .input-group {
-                flex-direction: column;
-            }
-            header h1 {
-                font-size: 1.8rem;
-            }
+        .progress-info {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🕷️ 语文笔记生成器</h1>
-            <p>智能爬虫版 · 自动从网络收集资料</p>
+            <h1>🕷️ 语文笔记生成器 · AI智能版</h1>
+            <p>爬取 hanchacha.com + DeepSeek AI 生成完整笔记</p>
         </header>
         
         <div class="search-card">
             <div class="input-group">
-                <input type="text" id="lessonName" placeholder="例如：海底世界、桂林山水、草船借箭..." />
-                <button onclick="generateNote()">🚀 开始爬取并生成笔记</button>
-            </div>
-            
-            <div class="examples">
-                <p>📖 试试这些课文：</p>
-                <div class="example-buttons">
-                    <span class="example-btn" onclick="setLesson('海底世界')">海底世界</span>
-                    <span class="example-btn" onclick="setLesson('桂林山水')">桂林山水</span>
-                    <span class="example-btn" onclick="setLesson('匆匆')">匆匆</span>
-                    <span class="example-btn" onclick="setLesson('静夜思')">静夜思</span>
-                    <span class="example-btn" onclick="setLesson('背影')">背影</span>
-                </div>
+                <input type="text" id="lessonName" placeholder="输入课文名称，例如：海底世界" />
+                <button onclick="generateNote()">🚀 开始生成</button>
             </div>
             
             <div id="tokenStatus" class="token-status token-missing">
-                ⚠️ 未检测到 GitHub Token，爬虫功能不可用，将使用本地笔记
-            </div>
-            
-            <div class="status-badge" id="statusBadge">
-                💡 提示：点击按钮后，系统会自动爬取网络资料，大约需要30-60秒
+                ⚠️ 正在检测 Token...
             </div>
         </div>
         
         <div id="loading" class="loading">
             <div class="spinner"></div>
-            <p>🕷️ 正在爬取网络资料...</p>
-            <p style="font-size: 0.85rem; color: #666; margin-top: 10px;">正在搜索：百度、初三网、语文迷</p>
-            <p style="font-size: 0.8rem; color: #999; margin-top: 5px;">⏱️ 预计需要 30-60 秒，请耐心等待</p>
+            <p id="loadingText">🕷️ 正在触发爬虫...</p>
+            <div class="progress-info" id="progressInfo"></div>
         </div>
         
         <div id="resultCard" class="result-card">
             <div class="result-header">
-                <h2>📖 生成结果</h2>
-                <button class="copy-btn" onclick="copyNote()">📋 复制笔记</button>
+                <h2>📖 AI 生成结果</h2>
+                <button class="copy-btn" onclick="copyNote()">📋 复制</button>
             </div>
             <div id="noteContent" class="note-content"></div>
         </div>
@@ -287,352 +192,81 @@
     </div>
 
     <script>
-        // GitHub 仓库配置
         const REPO_OWNER = "finnlove";
         const REPO_NAME = "yuwen-note";
         
-        // 本地缓存的笔记（备用）
-        const localNotes = {
-            "海底世界": `# 🌊 探秘海底世界 · 学霸综合笔记
-
-> 一份集**知识点、课堂笔记、教学思路**于一体的超实用手册！
-
----
-
-## 📚 一、课文简介
-
-《海底世界》是一篇科普性说明文，介绍了海底景色奇异、物产丰富的特点。
-
-*   **核心问题**：大海深处是怎样的？
-*   **主要内容**：从环境、动物、植物、矿产四个方面介绍。
-*   **中心句**：海底真是个景色奇异、物产丰富的世界！
-
----
-
-## 🧱 二、文章结构
-
-| 部分 | 内容 |
-|------|------|
-| 开头 | 提出问题 |
-| 中间 | 分别介绍环境、动物、植物、矿藏 |
-| 结尾 | 总结全文 |
-
----
-
-## ✨ 三、写作手法
-
-1. **对比**：海面波涛澎湃 vs 海底宁静
-2. **拟人**："窃窃私语"、"免费的长途旅行"
-3. **列数字**：海参每小时四米，梭子鱼每小时几十千米
-
----
-
-## 📝 四、词语积累
-
-| 类别 | 词语 |
-|------|------|
-| 必会词 | 宁静、器官、危险、迅速、后退 |
-| 近义词 | 宁静—安静、迅速—快速 |
-| 反义词 | 宁静—热闹、危险—安全 |
-
----
-
-## 🎯 五、课后练习
-
-1. 有感情地朗读课文
-2. 向家人介绍海底世界
-3. 用"总分总"结构写一段话`,
-            
-            "桂林山水": `# 🏔️ 桂林山水 · 学霸笔记
-
-> "桂林山水甲天下"
-
----
-
-## 📚 一、课文内容
-
-### 漓江的水
-- **静**：感觉不到它在流动
-- **清**：可以看见江底的沙石
-- **绿**：仿佛一块无瑕的翡翠
-
-### 桂林的山
-- **奇**：形态万千
-- **秀**：像翠绿的屏障
-- **险**：危峰兀立
-
----
-
-## ✨ 二、写作特色
-
-1. **排比句**："漓江的水真静啊...真清啊...真绿啊..."
-2. **比喻**：把山比作老人、巨象、骆驼
-3. **首尾呼应**：开头结尾都提到"人在画中游"
-
----
-
-## 🎯 三、课后练习
-
-1. 背诵全文
-2. 用"真...啊"写排比句
-3. 画一画桂林山水`,
-            
-            "匆匆": `# ⏰ 匆匆 · 朱自清
-
-> 燕子去了，有再来的时候；杨柳枯了，有再青的时候；桃花谢了，有再开的时候。
-
----
-
-## 📚 一、课文简介
-
-《匆匆》是现代著名作家朱自清的一篇散文。文章围绕"时间匆匆"展开，表达了作者对时光流逝的无奈和珍惜时间的感悟。
-
----
-
-## ✨ 二、名句赏析
-
-### "燕子去了，有再来的时候……"
-用排比句开头，用自然现象反衬时间一去不复返。
-
-### "像针尖上一滴水滴在大海里"
-比喻时间消逝得无声无息，无影无踪。
-
-### "但不能平的，为什么偏要白白走这一遭啊？"
-反问句，表达对生命意义的思考。
-
----
-
-## 🎯 三、课后思考
-
-1. 作者在文中提出了什么问题？
-2. 你觉得自己平时珍惜时间了吗？
-3. 写一段关于时间的话`,
-            
-            "静夜思": `# 🌙 静夜思 · 李白
-
-> 床前明月光，疑是地上霜。  
-> 举头望明月，低头思故乡。
-
----
-
-## 📚 一、诗意理解
-
-### 字词解释
-- **疑**：好像
-- **举头**：抬头
-- **思**：思念
-
-### 诗句翻译
-明亮的月光洒在床前，好像地上铺了一层白霜。  
-抬起头仰望天上的明月，低下头思念起远方的故乡。
-
----
-
-## ✨ 二、诗歌赏析
-
-这首诗用**比喻**的手法（月光像霜），通过"举头"和"低头"两个动作，生动地表现了诗人思念家乡的感情。
-
----
-
-## 🎯 三、背诵小技巧
-
-1. 想象画面：月光、霜、抬头、低头
-2. 动作记忆：用手比划"举头"和"低头"
-3. 多读几遍，感受韵律`,
-            
-            "背影": `# 🎒 背影 · 朱自清
-
-> 我与父亲不相见已二年余了，我最不能忘记的是他的背影。
-
----
-
-## 📚 一、课文简介
-
-《背影》是朱自清写的一篇回忆性散文。文章通过描写父亲送他到火车站、爬月台买橘子的背影，表达了父亲对儿子的关爱和儿子对父亲的思念。
-
----
-
-## ✨ 二、感人片段
-
-> "我看见他戴着黑布小帽，穿着黑布大马褂，深青布棉袍，蹒跚地走到铁道边，慢慢探身下去……他用两手攀着上面，两脚再向上缩；他肥胖的身子向左微倾，显出努力的样子。"
-
-这一段通过**动作描写**，把父亲爬月台的艰难写得很具体，非常感人。
-
----
-
-## 🎯 三、课后思考
-
-1. 为什么作者最不能忘记的是父亲的背影？
-2. 你身边有没有让你感动的瞬间？
-3. 写一段描写亲人的文字`
-        };
-        
-        // 页面加载时检查 Token
+        // 检查 Token 状态
         function checkTokenStatus() {
             const token = localStorage.getItem('github_token');
             const statusDiv = document.getElementById('tokenStatus');
             if (token && token.startsWith('ghp_')) {
-                statusDiv.innerHTML = '✅ GitHub Token 已配置！爬虫功能可用！';
+                statusDiv.innerHTML = '✅ GitHub Token 已配置，爬虫功能可用！';
                 statusDiv.className = 'token-status token-ok';
                 return true;
             } else {
-                statusDiv.innerHTML = '⚠️ 未检测到 GitHub Token，爬虫功能不可用，将使用本地笔记<br>📌 配置方法：按 F12 打开 Console，输入：localStorage.setItem("github_token", "你的token")';
+                statusDiv.innerHTML = '⚠️ 未配置 GitHub Token<br>📌 按 F12 打开 Console，输入：localStorage.setItem("github_token", "你的token")';
                 statusDiv.className = 'token-status token-missing';
                 return false;
             }
-        }
-        
-        function setLesson(lessonName) {
-            document.getElementById('lessonName').value = lessonName;
-            generateNote();
         }
         
         async function generateNote() {
             const lessonName = document.getElementById('lessonName').value.trim();
             
             if (!lessonName) {
-                alert('请输入课文名称！');
+                alert('请输入课文名称');
                 return;
             }
             
-            // 显示加载
+            // 清空所有显示
             document.getElementById('loading').style.display = 'block';
             document.getElementById('resultCard').style.display = 'none';
             document.getElementById('errorCard').style.display = 'none';
+            document.getElementById('loadingText').innerHTML = '🕷️ 正在触发爬虫...';
+            document.getElementById('progressInfo').innerHTML = '';
             
-            const badge = document.getElementById('statusBadge');
             const token = localStorage.getItem('github_token');
             
             try {
-                // 先尝试获取已有的笔记（如果之前爬取过）
-                const existingNote = await tryGetExistingNote(lessonName);
-                if (existingNote) {
-                    displayNote(existingNote);
-                    badge.innerHTML = '✅ 笔记已从缓存加载！如需最新资料，请再次点击生成。';
+                // 检查 Token
+                if (!token || !token.startsWith('ghp_')) {
+                    throw new Error('未配置 GitHub Token，无法触发爬虫');
+                }
+                
+                // 触发爬虫
+                document.getElementById('loadingText').innerHTML = '📡 正在触发 GitHub Actions 爬虫...';
+                const triggered = await triggerWorkflow(lessonName, token);
+                
+                if (!triggered) {
+                    throw new Error('触发爬虫失败，请检查 Token 权限');
+                }
+                
+                // 等待结果
+                document.getElementById('loadingText').innerHTML = '🕷️ 爬虫已启动，正在从 hanchacha.com 抓取资料...';
+                document.getElementById('progressInfo').innerHTML = '⏱️ 预计需要 30-60 秒，请耐心等待';
+                
+                const note = await pollForResult(lessonName);
+                
+                if (note) {
+                    document.getElementById('loadingText').innerHTML = '🤖 正在调用 AI 生成笔记...';
+                    await new Promise(r => setTimeout(r, 500));
+                    displayNote(note);
                     document.getElementById('loading').style.display = 'none';
-                    return;
-                }
-                
-                // 如果有 Token，尝试触发爬虫
-                if (token && token.startsWith('ghp_')) {
-                    badge.innerHTML = '🕷️ 正在触发爬虫任务...';
-                    const triggered = await triggerWorkflow(lessonName);
-                    
-                    if (triggered) {
-                        badge.innerHTML = '🕷️ 爬虫已启动，正在搜索网络资料...';
-                        const note = await pollForResult(lessonName);
-                        if (note) {
-                            displayNote(note);
-                            badge.innerHTML = '✅ 笔记生成成功！数据来自网络爬虫。';
-                            document.getElementById('loading').style.display = 'none';
-                            return;
-                        }
-                    }
-                }
-                
-                // 如果没有 Token 或爬虫失败，使用本地笔记
-                badge.innerHTML = '📚 使用本地笔记库...';
-                await new Promise(r => setTimeout(r, 500));
-                
-                const localNote = localNotes[lessonName];
-                if (localNote) {
-                    displayNote(localNote);
-                    document.getElementById('errorCard').innerHTML = `📚 当前使用本地笔记。<br><br>💡 想要使用网络爬虫？请先配置 GitHub Token（页面顶部有提示）`;
-                    document.getElementById('errorCard').style.display = 'block';
                 } else {
-                    // 生成通用笔记
-                    const genericNote = generateGenericNote(lessonName);
-                    displayNote(genericNote);
-                    document.getElementById('errorCard').innerHTML = `📚 已生成通用模板。<br><br>💡 提示：你可以添加更多课文到本地笔记库`;
-                    document.getElementById('errorCard').style.display = 'block';
+                    throw new Error('爬取超时，未获取到内容');
                 }
                 
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('errorCard').innerHTML = `❌ 生成失败：${error.message}<br><br>请稍后重试。`;
+                document.getElementById('errorCard').innerHTML = `❌ ${error.message}<br><br>💡 提示：可以在 GitHub Actions 页面手动运行测试`;
                 document.getElementById('errorCard').style.display = 'block';
-                badge.innerHTML = '❌ 生成失败，请稍后重试。';
-            } finally {
                 document.getElementById('loading').style.display = 'none';
             }
         }
         
-        function generateGenericNote(lessonName) {
-            return `# 📚 ${lessonName} · 学习笔记
-
----
-
-## 一、课前预习
-
-1. 朗读课文3遍，标出自然段
-2. 圈出不会的生字词
-3. 思考：这篇课文主要讲了什么？
-
----
-
-## 二、课堂笔记
-
-（在这里记录课堂内容）
-
-### 生字词
-| 生字 | 拼音 | 组词 |
-|------|------|------|
-| | | |
-| | | |
-
-### 重点句子
-> ________________________________
-
----
-
-## 三、课文理解
-
-**主要内容**：________________________________
-
-**中心思想**：________________________________
-
----
-
-## 四、课后复习
-
-1. 背诵指定段落
-2. 完成课后练习题
-3. 查找相关资料，了解更多
-
----
-
-## 五、我的收获
-
-✨ 今天学到了：________________________________
-
-⭐ 我还想知道：________________________________
-
----
-
-*📝 笔记生成时间：${new Date().toLocaleString()}*`;
-        }
-        
-        async function tryGetExistingNote(lessonName) {
+        async function triggerWorkflow(lessonName, token) {
+            const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/crawl.yml/dispatches`;
             try {
-                const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/data/${encodeURIComponent(lessonName)}.md`;
-                const response = await fetch(url);
-                if (response.ok) {
-                    return await response.text();
-                }
-            } catch (e) {
-                // 文件不存在
-            }
-            return null;
-        }
-        
-        async function triggerWorkflow(lessonName) {
-            const token = localStorage.getItem('github_token');
-            if (!token || !token.startsWith('ghp_')) {
-                return false;
-            }
-            
-            try {
-                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/crawl.yml/dispatches`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -642,9 +276,7 @@
                     },
                     body: JSON.stringify({
                         ref: 'main',
-                        inputs: {
-                            lesson_name: lessonName
-                        }
+                        inputs: { lesson_name: lessonName }
                     })
                 });
                 
@@ -662,28 +294,35 @@
             }
         }
         
-        async function pollForResult(lessonName, maxAttempts = 20, interval = 3000) {
+        async function pollForResult(lessonName, maxAttempts = 25, interval = 3000) {
             for (let i = 0; i < maxAttempts; i++) {
                 await new Promise(r => setTimeout(r, interval));
-                
-                const badge = document.getElementById('statusBadge');
-                badge.innerHTML = `🕷️ 爬虫运行中... (${i+1}/${maxAttempts}) 正在收集资料`;
+                document.getElementById('progressInfo').innerHTML = `⏱️ 等待中... (${i+1}/${maxAttempts}) 正在处理`;
                 
                 try {
+                    // 直接读取生成的笔记文件
                     const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/data/${encodeURIComponent(lessonName)}.md`;
                     const response = await fetch(url);
                     if (response.ok) {
-                        return await response.text();
+                        const note = await response.text();
+                        // 检查是否是 AI 生成的完整笔记（不是空模板）
+                        if (note && note.length > 500) {
+                            return note;
+                        }
                     }
-                } catch (e) {
-                    // 继续等待
+                } catch(e) {
+                    // 文件还不存在，继续等待
                 }
             }
             return null;
         }
         
         function displayNote(note) {
+            // 简单 Markdown 转 HTML
             let html = note
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
                 .replace(/\n/g, '<br>')
                 .replace(/^# (.*$)/gm, '<h1 style="font-size: 1.8rem; margin: 20px 0 10px; color: #333;">$1</h1>')
                 .replace(/^## (.*$)/gm, '<h2 style="font-size: 1.4rem; margin: 15px 0 10px; color: #555;">$1</h2>')
@@ -698,26 +337,19 @@
         }
         
         function copyNote() {
-            const noteContent = document.getElementById('noteContent').innerText;
-            navigator.clipboard.writeText(noteContent).then(() => {
-                alert('✅ 笔记已复制到剪贴板！');
-            }).catch(() => {
-                alert('复制失败，可以手动选中文字复制');
-            });
+            const text = document.getElementById('noteContent').innerText;
+            navigator.clipboard.writeText(text);
+            alert('✅ 笔记已复制');
         }
         
-        // 按回车键生成
-        document.getElementById('lessonName').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                generateNote();
-            }
+        // 回车生成
+        document.getElementById('lessonName').addEventListener('keypress', e => {
+            if (e.key === 'Enter') generateNote();
         });
         
-        // 页面加载时检查 Token 状态
+        // 页面加载检查
         checkTokenStatus();
-        
-        console.log('📚 语文笔记生成器已加载');
-        console.log('💡 Token 状态:', localStorage.getItem('github_token') ? '已配置' : '未配置');
+        console.log('📚 语文笔记生成器已加载（无缓存版本）');
     </script>
 </body>
 </html>
